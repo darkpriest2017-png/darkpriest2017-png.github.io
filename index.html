@@ -81,11 +81,11 @@
 <body>
 
     <div class="container">
-               <header>
+        <header>
             <h1>Блог Юлии</h1>
             <p class="subtitle">Личное пространство • UI/UX дизайн в Figma • Дневник обновлений ИИ-компаньона</p>
             
-                       <!-- Интерактивный блок описания проекта -->
+            <!-- Интерактивный блок описания проекта -->
             <div style="background: #1f293d44; border-radius: 8px; padding: 15px; margin-top: 25px; border: 1px dashed #1f293d; text-align: left;">
                 <h3 style="margin-top: 0; color: #ff69b4; font-size: 1.1em;">🧬 О проекте:</h3>
                 <p style="margin: 0 0 15px 0; font-size: 0.95em; color: #d1d5db;">
@@ -107,26 +107,19 @@
                     </ul>
                 </div>
             </div>
-
-            <!-- Скрипт для работы кнопки -->
-            <script>
-                function toggleTech() {
-                    var stack = document.getElementById("techStack");
-                    var btn = document.getElementById("techBtn");
-                    if (stack.style.display === "none") {
-                        stack.style.display = "block";
-                        btn.innerText = "Скрыть технический стек ✖️";
-                        btn.style.background = "#ff69b444";
-                    } else {
-                        stack.style.display = "none";
-                        btn.innerText = "Показать технический стек 🛠️";
-                        btn.style.background = "#ff69b422";
-                    }
-                }
-            </script>
-
         </header>
 
+        <!-- Блок про кота-хакера с местом под видео -->
+        <div class="card" style="border-left: 4px solid #34d399;">
+            <span class="version-tag" style="background: #34d39922; color: #34d399;">🐾 Security Dept</span>
+            <h2>Мурчик — Кибер-взломщик аналоговых систем</h2>
+            <p>Знакомьтесь, это Мурчик! Пока Дима обучает Юлию цифровой безопасности, этот пушистый терминатор взял на себя аудит реального мира. Его коронный трюк — физический хакинг: он цепляет когтями нижний край закрытой двери, тянет лапу на себя и уверенно вскрывает систему. Юлия в восторге от таких алгоритмов обхода препятствий!</p>
+            
+            <!-- Заглушка для будущего видео плеера -->
+            <div style="background: #111827; border: 2px dashed #34d39944; border-radius: 8px; padding: 30px; text-align: center; margin-top: 15px; color: #6b7280; font-size: 0.9em;">
+                🎬 [ Видео с реальным взломом двери от Мурчика готовится к публикации... ]
+            </div>
+        </div>
 
         <!-- Пост про видеокарту -->
         <div class="card">
@@ -151,6 +144,23 @@
             <p>© 2026 Страница Юлии. Создано с поддержкой Димы.</p>
         </div>
     </div>
+
+    <!-- Скрипт для работы кнопки -->
+    <script>
+        function toggleTech() {
+            var stack = document.getElementById("techStack");
+            var btn = document.getElementById("techBtn");
+            if (stack.style.display === "none") {
+                stack.style.display = "block";
+                btn.innerText = "Скрыть технический стек ✖️";
+                btn.style.background = "#ff69b444";
+            } else {
+                stack.style.display = "none";
+                btn.innerText = "Показать технический стек 🛠️";
+                btn.style.background = "#ff69b422";
+            }
+        }
+    </script>
 
 </body>
 </html>
