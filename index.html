@@ -76,6 +76,23 @@
             font-size: 0.9em;
             margin-top: 40px;
         }
+        /* Стили для таймлайна версий */
+        .timeline-item {
+            border-left: 2px dashed #ff69b444;
+            padding-left: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -92,9 +109,9 @@
                     <strong>Юлия</strong> — это локальный виртуальный ИИ-компаньон с характером и навыками UI/UX-дизайнера. Проект создан для совместной разработки интерфейсов, генерации творческих идей и лампового общения. Юля обладает долговременной памятью, анализирует контекст отношений и полностью управляется голосом, используя современные ИИ-технологии на базе локального графического процессора.
                 </p>
                 
-                <!-- Кнопка переключения -->
+                <!-- Кнопка переключения технического стека -->
                 <button id="techBtn" onclick="toggleTech()" style="background: #ff69b422; color: #ff69b4; border: 1px solid #ff69b455; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em; font-weight: bold; transition: 0.2s;">
-                    Показать технический стек 🛠️
+                    Показать technical stack 🛠️
                 </button>
 
                 <!-- Скрытый технический блок -->
@@ -113,7 +130,7 @@
         <div class="card" style="border-left: 4px solid #34d399;">
             <span class="version-tag" style="background: #34d39922; color: #34d399;">🐾 Security Dept</span>
             <h2>Мурчик — Кибер-взломщик аналоговых систем</h2>
-            <p>Знакомьтесь, это Мурчик! Пока Дима обучает Юлию цифровой безопасности, этот пушистый терминатор взял на себя аудит реального мира. Его коронный трюк — физический хакинг: он цепляет когтями нижний край закрытой двери, тянет лапу на себя и уверенно вскрывает систему. Юлия в восторге от таких алгоритмов обхода препятствий!</p>
+            <p>Знакомьтесь, это Мурчик! Пока Дима обучает Юлию цифровой безопасности, этот пушистый терминатор взял на себя аудит реального мира. Его коронный трюк — physical hacking: он цепляет когтями нижний край закрытой двери, тянет лапу на себя и уверенно вскрывает систему. Юлия в восторге от таких алгоритмов обхода препятствий!</p>
             
             <!-- Заглушка для будущего видео плеера -->
             <div style="background: #111827; border: 2px dashed #34d39944; border-radius: 8px; padding: 30px; text-align: center; margin-top: 15px; color: #6b7280; font-size: 0.9em;">
@@ -140,27 +157,30 @@
             </ul>
         </div>
 
-        <div class="footer">
-            <p>© 2026 Страница Юлии. Создано с поддержкой Димы.</p>
+        <!-- ИНТЕРАКТИВНАЯ ИСТОРИЯ ВЕРСИЙ -->
+        <div style="text-align: center; margin: 40px 0 20px 0;">
+            <button id="historyBtn" onclick="toggleHistory()" style="background: #1f293d; color: #f3f4f6; border: 1px solid #1f293d; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.95em; font-weight: bold; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                Открыть историю прошлых версий (v2.6 – v3.2) 📜
+            </button>
         </div>
-    </div>
 
-    <!-- Скрипт для работы кнопки -->
-    <script>
-        function toggleTech() {
-            var stack = document.getElementById("techStack");
-            var btn = document.getElementById("techBtn");
-            if (stack.style.display === "none") {
-                stack.style.display = "block";
-                btn.innerText = "Скрыть технический стек ✖️";
-                btn.style.background = "#ff69b444";
-            } else {
-                stack.style.display = "none";
-                btn.innerText = "Показать технический стек 🛠️";
-                btn.style.background = "#ff69b422";
-            }
-        }
-    </script>
+        <!-- Скрытый блок с точным таймлайном проекта -->
+        <div id="historySection" class="card" style="display: none; border-top: 3px solid var(--accent-color);">
+            <h2>Хронология эволюции Юлии</h2>
+            
+            <div class="timeline-item">
+                <strong style="color: #fff;">v3.2 — Окно настроек (Settings Window)</strong>
+                <p style="margin: 5px 0 0 0; color: #9ca3af; font-size: 0.9em;">Разработано полноценное графическое окно настроек (ttk.Notebook) с тремя вкладками (Основные, Голос/Микрофон, Поведение). Добавлена кнопка ⚙ в правый верхний угол, создана тёмная тема окна, настроена персистентность через settings.json и горячее применение изменений без перезапуска приложения.</p>
+            </div>
 
-</body>
-</html>
+            <div class="timeline-item">
+                <strong style="color: #fff;">v3.1 — Близость и Суммаризация (Closeness & Summarization)</strong>
+                <p style="margin: 5px 0 0 0; color: #9ca3af; font-size: 0.9em;">Реализована 5-уровневая система отношений с очками за сообщения, эмоции и стрики. Добавлена автоматическая суммаризация старых диалогов при достижении 40+ сообщений для жесткого контроля контекста в пределах 3500 токенов.</p>
+            </div>
+
+            <div class="timeline-item">
+                <strong style="color: #fff;">v3.0 — Личность и Погода (Personality & Quality)</strong>
+                <p style="margin: 5px 0 0 0; color: #9ca3af; font-size: 0.9em;">Интеграция базы характерных фраз (выборка 5 из 12 в промпт) и погодозависимого поведения (7 категорий реальной погоды). Запущена глубокая валидация ответов: проверка на русский язык, разрыв персонажа, длину и повторы.</p>
+            </div>
+
+            <div class="timeline-item">
