@@ -13,9 +13,9 @@ from voice_module import VoiceModule
 # === НАСТРОЙКИ АВТОРИЗАЦИИ GIGACHAT v5.2 (СТРОГО ОРИГИНАЛ ИЗ БЭКАПА) ===
 # Никаких запятых между строками! Python сам склеит их в одну системную переменную:
 os.environ["GIGACHAT_CREDENTIALS"] = (
-    "MDE5YzZiODQtNmY3NC03MzY0LThkNTUtNDVjMTE"
-    "4YTUxZGMzOmRmNjBmZThjLTk5NDQtNDBhYS1iOG"
-    "FhLTM0MjYwNjUyZDMxMQ=="
+    ""
+    ""
+    ""
 )
 
 WEATHER_KEY = "СЮДА_ВСТАВЬТЕ_ВАШ_СТАРЫЙ_ПОГОДНЫЙ_КЛЮЧ_ЕСЛИ_ОН_НУЖЕН"
