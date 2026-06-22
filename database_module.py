@@ -1,70 +1,72 @@
+# -*- coding: utf-8 -*-
 import os
 import json
-from datetime import datetime
-from config_module import TOKENS_FILE, MEMORY_FILE, FACTS_FILE, CLOSENESS_FILE, MOOD_FILE, log
+import logging
 
-class TokenTracker:
-    def __init__(self):
-        self.total = 0
-        self.today = 0
-        self.date = datetime.now().strftime("%Y-%m-%d")
-        self.load()
-
-    def load(self):
-        if os.path.exists(TOKENS_FILE):
-            try:
-                with open(TOKENS_FILE, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    self.total = data.get("total", 0)
-                    if data.get("date") == self.date:
-                        self.today = data.get("today", 0)
-            except Exception as e:
-                log("ERROR", f"Ошибка трекера токенов: {e}")
-
-    def save(self):
-        try:
-            with open(TOKENS_FILE, "w", encoding="utf-8") as f:
-                json.dump({"total": self.total, "today": self.today, "date": self.date}, f)
-        except Exception as e:
-            log("ERROR", f"Не удалось сохранить токены: {e}")
-
-    def add(self, text_in, text_out):
-        # Простая эмуляция подсчета (для точного замените на ваш estimate_tokens)
-        input_tok = len(text_in) // 4 + 1
-        output_tok = len(text_out) // 4 + 1
-        total = input_tok + output_tok
-        self.total += total
-        self.today += total
-        self.save()
-        log("TOKEN", f"Вход: {input_tok} | Выход: {output_tok} | Всего за день: {self.today}")
-        return total
-
-    def get_display(self):
-        return f"Токены: {self.today} сегодня / {self.total} всего"
-
-class MemoryManager:
-    def __init__(self):
-        self.memory_file = MEMORY_FILE
-        self.facts_file = FACTS_FILE
-        self.closeness_file = CLOSENESS_FILE
-        self.mood_file = MOOD_FILE
+class JSONDatabase:
+    """Класс для безопасного управления всеми JSON-файлами памяти Юли."""
+    
+    def __init__(self, base_dir=None):
+        # Если директория не задана, берем текущую папку скрипта
+        self.base_dir = base_dir if base_dir else os.path.dirname(os.path.abspath(__file__))
         
-    def load_memory(self):
-        if os.path.exists(self.memory_file):
-            with open(self.memory_file, "r", encoding="utf-8") as f:
+    def _get_path(self, filename):
+        """Возвращает полный путь к файлу данных."""
+        if not filename.endswith('.json'):
+            filename += '.json'
+        return os.path.join(self.base_dir, filename)
+
+    def load_json(self, filename, default_factory=dict):
+        """Безопасно загружает данные из JSON. Создает бэкап при ошибке."""
+        path = self._get_path(filename)
+        bak_path = path + '.bak'
+        
+        if not os.path.exists(path):
+            # Если файла нет, но есть бэкап — восстанавливаем из бэкапа
+            if os.path.exists(bak_path):
+                try:
+                    with open(bak_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    self.save_json(filename, data)
+                    return data
+                except Exception:
+                    pass
+            return default_factory()
+            
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        return []
+        except (json.JSONDecodeError, PermissionError) as e:
+            logging.error(f"Ошибка чтения {filename}: {e}. Пробуем загрузить бэкап.")
+            if os.path.exists(bak_path):
+                try:
+                    with open(bak_path, 'r', encoding='utf-8') as f:
+                        return json.load(f)
+                except Exception:
+                    return default_factory()
+            return default_factory()
 
-    def save_memory(self, context):
-        with open(self.memory_file, "w", encoding="utf-8") as f:
-            json.dump(context, f, ensure_ascii=False, indent=4)
+    def save_json(self, filename, data):
+        """Записывает данные в JSON с предварительным созданием бэкапа .bak"""
+        path = self._get_path(filename)
+        bak_path = path + '.bak'
+        
+        try:
+            # Создаем резервную копию перед перезаписью
+            if os.path.exists(path):
+                if os.path.exists(bak_path):
+                    os.remove(bak_path)
+                os.rename(path, bak_path)
+                
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+            return True
+        except Exception as e:
+            logging.error(f"Критическая ошибка записи в файл {filename}: {e}")
+            # Если запись сорвалась, пробуем вернуть бэкап на место
+            if os.path.exists(bak_path) and not os.path.exists(path):
+                os.rename(bak_path, path)
+            return False
 
-    def load_closeness(self):
-        if os.path.exists(self.closeness_file):
-            with open(self.closeness_file, "r", encoding="utf-8") as f:
-                return json.load(f).get("points", 0)
-        return 0
-
-    def save_closeness(self, points):
-        with open(self.closeness_file, "w", encoding="utf-8") as f:
-            json.dump({"points": points, "last_update": str(datetime.now())}, f)
+# Инициализируем один глобальный экземпляр для работы со всеми файлами
+db = JSONDatabase()
