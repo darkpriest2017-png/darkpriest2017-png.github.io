@@ -18,6 +18,7 @@ import requests
 import pygame
 import edge_tts
 import speech_recognition as sr
+import database_module
 from gigachat import GigaChat
 from gigachat.models import (
     Chat, Messages, MessagesRole
@@ -55,7 +56,7 @@ GIGACHAT_KEY = (
     ""
 )
 WEATHER_KEY = ""
-WEATHER_CITY = "Kemerovo"
+WEATHER_CITY = ""
 PROJECT_DIR = "D:\\VirtualCompanion"
 AUDIO_DIR = os.path.join(
     PROJECT_DIR, "audio_chunks"
@@ -251,7 +252,7 @@ HELP_OFFER_PHRASES = [
 
 VOICE = "ru-RU-SvetlanaNeural"
 COMPANION_NAME = "Yulya"
-APP_VERSION = "5.2"
+APP_VERSION = "5.2.1 (DB Mod)"
 MIC_INDEX = 1
 SILENCE_MIN = 1800
 SILENCE_MAX = 2700
@@ -350,25 +351,12 @@ user_settings = {
 
 def load_settings():
     global user_settings
-    try:
-        if os.path.exists(SETTINGS_FILE):
-            with open(
-                SETTINGS_FILE, "r",
-                encoding="utf-8"
-            ) as f:
-                _s = json.loads(
-                    f.read().strip()
-                )
-            if isinstance(_s, dict):
-                for _k in list(
-                    user_settings.keys()
-                ):
-                    if _k in _s:
-                        user_settings[_k] = (
-                            _s[_k]
-                        )
-    except Exception:
-        pass
+    _s = database_module.db.load_json("settings", default_factory=dict)
+    if _s and isinstance(_s, dict):
+        for _k in list(user_settings.keys()):
+            if _k in _s:
+                user_settings[_k] = _s[_k]
+
 
 load_settings()
 
@@ -1192,7 +1180,7 @@ def safe_save(fp, data):
             os.rename(bak, fp)
 
 def save_settings_file():
-    safe_save(SETTINGS_FILE, user_settings)
+    database_module.db.save_json("settings", user_settings)
 
 # ==========================================
 # СИСТЕМА БЛИЗОСТИ
@@ -2352,7 +2340,7 @@ def load_facts():
     if data and isinstance(data, list):
         return data
     return []
-
+ 
 def save_facts():
     safe_save(FACTS_FILE, saved_facts)
 
@@ -2509,13 +2497,16 @@ def build_absence_context():
 # КАЛЕНДАРЬ СОБЫТИЙ
 # ==========================================
 def load_events():
-    data = safe_load(EVENTS_FILE)
-    if data and isinstance(data, list):
+    data = database_module.db.load_json("events", default_factory=list)
+    if isinstance(data, list):
         return data
     return []
 
 def save_events():
-    safe_save(EVENTS_FILE, calendar_events)
+    database_module.db.save_json("events", calendar_events)
+
+
+
 
 def cleanup_old_events():
     now = datetime.now()
